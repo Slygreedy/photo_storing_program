@@ -6,15 +6,21 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.apache.commons.io.*;
 
-public class Main {
 
-    public static void main(String argv[]) {
+public class Main
+{
+
+    public static void main(String argv[])
+    {
 
 
         //moved instantiating this object and converting it to hashmap out of traverse method
         File file = new File("/Users/simonread/pictures/oldpic");
         Map<String, File> hashcodeToFileCrossRef = new HashMap<String, File>();
+
+        file.
 
         //look at implementing more try/catch and throws
 
@@ -22,48 +28,56 @@ public class Main {
 
     }
 
-    private static void traverse(File file,Map<String,File> collection) {
+    private static void traverse (File file,Map<String,File> collection)
+            {
 
         //what about duplicates (I think I have covered types below)?
-        Iterator it = FileUtils.iterateFiles(new File("/Users/simonread/pictures/oldpic"), ".jpg", false);
-            while (it.hasNext()){
-                if (file.isDirectory())
-                {
-                    traverse(File file,Map<String,File> collection);
-                }
-                else {
-                    for (File photo : file.listFiles())
+        Iterator it = FileUtils.iterateFiles(file, new String[] {"jpg"} ,true);
+            //while (it.hasNext())
+                //{
+                    //if (file.isDirectory())
+                    //{
+                    //traverse(file, collection);
+                    //}
+                    //else
                         {
-                        recordPhotoWithoutDuplication(collection, photo, generateHashCodeFromPhotoData(photo));
-                        }
-                    for (Map.Entry<String, File> element : collection.entrySet())
-                        {
-                        copyPicToNewLocation(element);
+                        for (File photo : file.listFiles())
+                            {
+                            recordPhotoWithoutDuplication(collection, photo, generateHashCodeFromPhotoData(photo));
+                            }
+                        for (Map.Entry<String, File> element : collection.entrySet())
+                            {
+                            copyPicToNewLocation(element);
+                            }
                         }
                 }
-            }
-        }
+            //}
 
 
-    private static void recordPhotoWithoutDuplication(Map<String, File> fileMap, File photo, String hex) {
-        if (fileMap.containsKey(hex)) {
+    private static void recordPhotoWithoutDuplication(Map<String, File> fileMap, File photo, String hex)
+    {
+        if (fileMap.containsKey(hex))
+        {
             System.out.println("duplicate");
             return;
         }
         insertIntoHashcodeToFileCrossRef(fileMap, photo, hex);
     }
 
-    public static String generateHashCodeFromPhotoData(File file) {
+    public static String generateHashCodeFromPhotoData(File file)
+    {
 
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            messageDigest.update(Files.readAllBytes(file.toPath()));
-            byte[] hash = messageDigest.digest();
-            return DatatypeConverter.printHexBinary(hash).toUpperCase();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+                MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+                messageDigest.update(Files.readAllBytes(file.toPath()));
+                byte[] hash = messageDigest.digest();
+                return DatatypeConverter.printHexBinary(hash).toUpperCase();
+            }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                    return null;
+                }
     }
 
     private static void copyPicToNewLocation(Map.Entry<String, File> element) {
