@@ -19,10 +19,13 @@ public class Main
         //moved instantiating this object and converting it to hashmap out of traverse method
         File dir = new File("/Users/simonread/pictures/oldpic");
         Map<String, File> hashcodeToFileCrossRef = new HashMap<String, File>();
+        Iterator it = FileUtils.iterateFiles(dir, new String[]{"jpg"}, true);
+        File photo;
 
         //while photo found in dir & sud-dirs generate a hash code & de-dup
         while (it.hasNext())
             {
+                photo = new File(it.next().toString());
             recordPhotoWithoutDuplication(hashcodeToFileCrossRef, photo, generateHashCodeFromPhotoData(photo));
             }
 
@@ -36,12 +39,6 @@ public class Main
             //look at implementing more try/catch and throws and some tests
 
     //all of these methods are static because 1.main is and 2.do not require object to be instantiated
-    
-        private static void traverse (File dir)
-        {
-            //what about duplicates (I think I have covered types below)?
-            Iterator it = FileUtils.iterateFiles(dir, new String[]{"jpg"}, true);
-        }
 
         //de-dup photos - and replace photo with hashcode?
         private static void recordPhotoWithoutDuplication (Map < String, File > fileMap, File photo, String hex)
