@@ -17,15 +17,17 @@ public class Main
     {
 
         //moved instantiating this object and converting it to hashmap out of traverse method
+        //these are variables (not fields) within main method
         File dir = new File("/Users/simonread/pictures/oldpic");
-        Map<String, File> hashcodeToFileCrossRef = new HashMap<String, File>();
-        Iterator it = FileUtils.iterateFiles(dir, new String[]{"jpg"}, true);
-        File photo;
+        Map<String, File> hashcodeToFileCrossRef = new HashMap<>();
+        Iterator <File> it = FileUtils.iterateFiles(dir, new String[]{"jpg"}, true);
 
-        //while photo found in dir & sud-dirs generate a hash code & de-dup
+        // 3. if time re-factor this to create methods and move methods into classes
+
+        //while photo found in dir & sub-dirs generate a hash code & de-dup
         while (it.hasNext())
             {
-                photo = new File(it.next().toString());
+                File photo = it.next();
             recordPhotoWithoutDuplication(hashcodeToFileCrossRef, photo, generateHashCodeFromPhotoData(photo));
             }
 
@@ -35,8 +37,6 @@ public class Main
             copyPicToNewLocation(element);
             }
     }
-
-            //look at implementing more try/catch and throws and some tests
 
     //all of these methods are static because 1.main is and 2.do not require object to be instantiated
 
@@ -60,10 +60,13 @@ public class Main
                 byte[] hash = messageDigest.digest();
                 return DatatypeConverter.printHexBinary(hash).toUpperCase();
             } catch (Exception ex) {
+                // 1. try and persist this catch by logging it i.e. log4j
                 ex.printStackTrace();
                 return null;
             }
         }
+
+        // 2. Also look at implementing some TDD
 
         //this copies the photo (along with or denoted by hashcode?) to the new file location
         private static void copyPicToNewLocation (Map.Entry < String, File > element){
@@ -83,20 +86,5 @@ public class Main
             fileMap.put(hex, photo);
             System.out.printf("hex=%s\n", hex);
         }
-
-        //below is for persistence of directory contents as an array
-
-    /* *previous code that created an array first but above does not require it*
-    String dirPath = "d:/pic";
-    File dir = new File(dirPath);
-    File[] files = dir.listFiles();
-    if (files.length == 0) {
-        System.out.println("The directory is empty");
-    } else {
-        for (File aFile : files) {
-            System.out.println(aFile.getName() + " - " + aFile.length());
-        }
-    }
-    */
 
     }
